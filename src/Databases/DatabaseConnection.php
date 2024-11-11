@@ -18,7 +18,6 @@ class DatabaseConnection {
         $USER_DATABASE,
         $PASSWORD_DATABASE
       );
-      echo "Success to connect on database!";
     } catch (\PDOException $error) {
       exit($error->getMessage());
     }
