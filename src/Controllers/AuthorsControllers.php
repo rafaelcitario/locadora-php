@@ -2,7 +2,6 @@
 
 namespace Src\Controllers;
 
-use PDOException;
 use Src\TableGateways\AuthorsGateways;
 
 
@@ -12,7 +11,7 @@ class AuthorsControllers {
   private $authorId     = null;
   private $authorsGateways = null;
 
-  public function __construct(\PDO $database, string $requestMethod, int $authorId) {
+  public function __construct(\PDO $database, string $requestMethod,  int | null $authorId) {
     $this->database = $database;
     $this->requestMethod = $requestMethod;
     $this->authorId     = $authorId;
@@ -58,7 +57,7 @@ class AuthorsControllers {
         return $this->statusCodeHeader(200, "Sucess!", json_encode($result));
       }
       return $this->statusCodeHeader(400, "Bad Request!", null);
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) {
       exit($e->getMessage());
     }
   }
@@ -69,7 +68,7 @@ class AuthorsControllers {
         return $this->statusCodeHeader(200, "Sucess!", json_encode($result));
       }
       return $this->statusCodeHeader(400, "Bad Request!", null);
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) {
       exit($e->getMessage());
     }
   }
@@ -81,7 +80,7 @@ class AuthorsControllers {
       }
       $result = $this->authorsGateways->insert($input);
       return $this->statusCodeHeader(201, "Created!", json_encode($result));
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) {
       exit($e->getMessage());
     }
   }
@@ -93,7 +92,7 @@ class AuthorsControllers {
       }
       $result = $this->authorsGateways->update($authorId, $input);
       return $this->statusCodeHeader(201, "Updated!", json_encode($result));
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) {
       exit($e->getMessage());
     }
   }
@@ -101,7 +100,7 @@ class AuthorsControllers {
     try {
       $result = $this->authorsGateways->delete($authorId);
       return $this->statusCodeHeader(200, "Deleted!", json_encode($result));
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) {
       exit($e->getMessage());
     }
   }

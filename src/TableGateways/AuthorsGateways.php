@@ -2,7 +2,6 @@
 
 namespace Src\TableGateways;
 
-use PDOException;
 
 class AuthorsGateways {
   private $database = null;
@@ -20,7 +19,7 @@ class AuthorsGateways {
       $statement = $this->database->query($statement);
       $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
       return $result;
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) {
       exit($e->getMessage());
     }
   }
@@ -38,7 +37,7 @@ class AuthorsGateways {
       ]);
       $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
       return $result;
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) {
       exit($e->getMessage());
     }
   }
@@ -52,7 +51,7 @@ class AuthorsGateways {
       ]);
       $result = $statement->rowCount();
       return $result;
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) {
       exit($e->getMessage());
     }
   }
@@ -67,7 +66,7 @@ class AuthorsGateways {
       ]);
       $result = $statement->rowCount();
       return $result;
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) {
       exit($e->getMessage());
     }
   }
@@ -81,7 +80,7 @@ class AuthorsGateways {
       ]);
       $result = $statement->rowCount();
       return $result;
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) {
       exit($e->getMessage());
     }
   }
