@@ -9,10 +9,8 @@ class MoviesControllers {
   private $requestMethod;
   private $movieGateways;
   private $movieId;
-  // private $response = [];
 
   public function __construct($database, $requestMethod, $movieId) {
-
     $this->requestMethod = $requestMethod;
     $this->movieId       = $movieId;
     $this->database      = $database;
@@ -20,7 +18,6 @@ class MoviesControllers {
   }
 
   public function processRequest() {
-
     switch ($this->requestMethod) {
       case 'GET':
         if ($this->movieId) {
@@ -42,7 +39,7 @@ class MoviesControllers {
         $response = $this->deleteMovie($this->movieId);
         break;
       default:
-        $this->notResponse();
+        $this->statusCodeHeader(400, "Bad Request!", null);
         break;
     }
 
@@ -55,61 +52,45 @@ class MoviesControllers {
   private function getMovie(int $movieId) {
     $result =  $this->movieGateways->list($movieId);
     if (!$result) {
-      return $this->notResponse();
+      return $this->statusCodeHeader(400, "Bad Request!", null);
     }
-    $response['status_code_header'] = "HTTP/1.1 200 OK";
-    $response['body'] = json_encode($result);
-    return $response;
+    return $this->statusCodeHeader(200, "Sucess!", json_encode($result));
   }
 
   private function getAllMovies() {
     $result = $this->movieGateways->listAll();
     if (!$result) {
-      return $this->notResponse();
+      return $this->statusCodeHeader(400, "Bad Request!", null);
     }
-    $response['status_code_header'] = "HTTP/1.1 200 OK";
-    $response['body'] = json_encode($result);
-    return $response;
+    return $this->statusCodeHeader(200, "Sucess!", json_encode($result));
   }
 
   private function createNew() {
     $input = (array) json_decode(file_get_contents("php://input"), true);
     if (!$this->validateMovie($input)) {
-      return $this->unprocessedEntityResponse();
+      return $this->statusCodeHeader(422, "Unprocessable Entity!", json_encode(["error" => 'Invalid Input',]));
     }
     $this->movieGateways->insert($input);
-    $response['status_code_header'] = "HTTP/1.1 201 Created";
-    $response['body']               = null;
-    return $response;
+    return $this->statusCodeHeader(201, "Created!", null);
   }
 
   private function updateMovie($movieId) {
     $input = json_decode(file_get_contents('php://input'), true);
     if (!$this->validateMovie($input)) {
-      return $this->unprocessedEntityResponse();
+      return $this->statusCodeHeader(422, "Unprocessable Entity!", json_encode(["error" => 'Invalid Input',]));
     }
     $this->movieGateways->update($movieId, $input);
-    $response['status_code_header'] = "HTTP/1.1 200 OK";
-    $response['body']                 = null;
-    return $response;
+    return $this->statusCodeHeader(200, "Sucess!", null);
   }
 
   private function deleteMovie($movieId) {
     $this->movieGateways->delete($movieId);
-    $response['status_code_header'] = "HTTP/1.1 200 Sucess!";
-    $response['body']                 = null;
-    return $response;
+    return $this->statusCodeHeader(200, "Sucess!", null);
   }
 
-  private function unprocessedEntityResponse() {
-    $response['status_code_header'] = "HTTP/1.1 402 Unprocessable Entity";
-    $response['body']                 = json_encode(["error" => 'Invalid Input',]);
-    return $response;
-  }
-
-  private function notResponse() {
-    $response['status_code_header'] = "HTTP/1.1 404 Not Found!";
-    $response['body']                 = null;
+  public function statusCodeHeader(int $code, string $statusMessage, null | bool | string $body) {
+    $response['status_code_header'] = "HTTP/1.1 {$code} $statusMessage";
+    $response['body']                 = $body;
     return $response;
   }
 
