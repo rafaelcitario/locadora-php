@@ -1,6 +1,7 @@
 <?php
 
 use Src\Controllers\AuthorsControllers;
+use Src\Controllers\MoviesAuthorsControllers;
 use Src\Controllers\MoviesControllers;
 
 require '../bootstrap.php';
@@ -18,6 +19,8 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 
 $movieId = null;
 $authorId = null;
+$movieInfoId = null;
+
 if ($uri[1] === 'movies') {
   if (isset($uri[2])) {
     $movieId = (int) $uri[2];
@@ -33,4 +36,13 @@ if ($uri[1] === "authors") {
   $authorsControllers = (new AuthorsControllers($databaseConnection, $requestMethod, $authorId))->processRequest();
   $encodedAuthors     = json_encode($authorsControllers);
   echo json_decode($encodedAuthors, true);
+}
+
+if ($uri[1] === "moviesInfo") {
+  if (isset($uri[2])) {
+    $movieInfoId = (int) $uri[2];
+  }
+  $moviesAuthorsControllers = (new MoviesAuthorsControllers($databaseConnection, $requestMethod, $movieInfoId))->processRequest();
+  $encodedMoviesInfo = json_encode($moviesAuthorsControllers);
+  echo json_decode($encodedMoviesInfo, true);
 }
