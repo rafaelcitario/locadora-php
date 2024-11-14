@@ -33,10 +33,10 @@ class MoviesAuthorsControllers {
         $response = $this->insert();
         break;
       case 'PUT':
-        // $response = $this->update();
+        $response = $this->update($this->idRequest);
         break;
       case 'DELETE':
-        // $response = $this->delete();
+        $response = $this->delete($this->idRequest);
         break;
       default:
         $response = $this->statusCodeHeader(400, "Bad Request", null);
@@ -72,20 +72,23 @@ class MoviesAuthorsControllers {
     $result = $this->movies_authorsGateways->insert($input);
     return $this->statusCodeHeader(201, "Created", json_encode($result));
   }
-  // public function update(int $idToUpdate, array $input) {
-  //   $result = $this->movies_authorsGateways->update();
-  //   if ($result !== null) {
-  //     return $response = $this->statusCodeHeader(200, 'Sucess', json_encode($result));
-  //   }
-  //   return $response = $this->statusCodeHeader(404, 'Not Found', null);
-  // }
-  // public function delete(int $idToDelete) {
-  //   $result = $this->movies_authorsGateways->delete();
-  //   if ($result !== null) {
-  //     return $response = $this->statusCodeHeader(200, 'Sucess', json_encode($result));
-  //   }
-  //   return $response = $this->statusCodeHeader(404, 'Not Found', null);
-  // }
+
+  public function update(int $movieId) {
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$this->validadeInputRequest($input)) {
+      $this->statusCodeHeader(422, 'Unprocessable Entity', null);
+    }
+    $result = $this->movies_authorsGateways->update($movieId, $input);
+    return $this->statusCodeHeader(200, "Updated", json_encode($result));
+  }
+
+  public function delete(int $movieId) {
+    $result = $this->movies_authorsGateways->delete($movieId);
+    if (!$result) {
+      return $this->statusCodeHeader(400, "Bad Request", null);
+    }
+    return $this->statusCodeHeader(204, "Deleted", null);
+  }
 
   public function validadeInputRequest(array $input) {
     if (!isset($input['movie']) || !isset($input['category']) || !isset($input['price']) || !isset($input['amount']) || !isset($input['name'])) {
