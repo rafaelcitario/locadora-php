@@ -27,7 +27,7 @@ $createTables = <<<EOS
 
   CREATE TABLE IF NOT EXISTS emails(
   id INT AUTO_INCREMENT NOT NULL,
-  email VARCHAR(13) NOT NULL,
+  email VARCHAR(100) NOT NULL,
   id_customer INT NOT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id_customer) REFERENCES customers(id)
