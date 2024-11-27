@@ -20,8 +20,16 @@ class CustomersControllers {
 
   public function processRequest() {
     switch ($this->requestMethod) {
-        // case 'GET':
-        //   break;
+      case 'GET':
+        if ($this->idRequest) {
+          // $response = $this->getCustomer($this->idRequest);
+          break;
+        }
+
+        if (!isset($this->idRequest)) {
+          $response = $this->getAllCustomers();
+          break;
+        }
       case 'POST':
         $response = $this->createNew();
         break;
@@ -40,7 +48,18 @@ class CustomersControllers {
     }
   }
 
-  public function createNew() {
+  private function getAllCustomers() {
+    $result = $this->customersGateway->listAll();
+    if ($result != null) {
+      return $this->statusCodeHeader(200, "Success", json_encode($result));
+    }
+    return $this->statusCodeHeader(400, "Bad Request", null);
+  }
+
+  private function getCustomer(int $id) {
+  }
+
+  private function createNew() {
     $input = (array) json_decode(file_get_contents("php://input"), true);
     if (!$this->validateCustomer($input)) {
       return $this->statusCodeHeader(422, "Unprocessable Entity", null);

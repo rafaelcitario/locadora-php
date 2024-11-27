@@ -11,6 +11,38 @@ class CustomersGateways {
     $this->database = $database;
   }
 
+  public function listAll() {
+    try {
+      $statement = "SELECT 
+      customers.id, 
+      complete_name, 
+      cpf, 
+      birth_date, 
+      email, 
+      phone, 
+      address, 
+      number, 
+      street, 
+      city, 
+      country, 
+      complement  
+      FROM complements INNER JOIN(
+      addresses INNER JOIN(
+      emails INNER JOIN(
+      phones INNER JOIN customers
+      ON customers.id = phones.id_customer)
+      ON customers.id = emails.id_customer)
+      ON customers.id = addresses.id_customer)
+      ON addresses.id = complements.id_address";
+
+      $statement = $this->database->query($statement);
+      $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+      return $result;
+    } catch (Exception $e) {
+      throw $e;
+    }
+  }
+
   public function insert(array $input) {
     $this->database->beginTransaction();
 
