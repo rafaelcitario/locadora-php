@@ -3,6 +3,7 @@
 use Src\Controllers\AuthorsControllers;
 use Src\Controllers\MoviesAuthorsControllers;
 use Src\Controllers\MoviesControllers;
+use Src\Controllers\CustomersControllers;
 
 require '../bootstrap.php';
 
@@ -45,4 +46,13 @@ if ($uri[1] === "moviesInfo") {
   $moviesAuthorsControllers = (new MoviesAuthorsControllers($databaseConnection, $requestMethod, $movieInfoId))->processRequest();
   $encodedMoviesInfo = json_encode($moviesAuthorsControllers);
   echo json_decode($encodedMoviesInfo, true);
+}
+
+if ($uri[1] === "customer") {
+  if (isset($uri[2])) {
+    $customerId = (int) $uri[2];
+  }
+  $customersControllers = (new CustomersControllers($databaseConnection, $requestMethod, $movieInfoId))->processRequest();
+  $encodedCustomers = json_encode($customersControllers);
+  echo json_decode($encodedCustomers, true);
 }
